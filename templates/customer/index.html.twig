@@ -1,0 +1,76 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Customer index{% endblock %}
+
+{% block body %}
+<style>
+#pages li {
+    display: inline;
+}
+</style>
+
+    <h1>Customers</h1>
+    
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>PhoneNumber</th>
+                <th>Email</th>
+                <th>BirthDate</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for customer in customers %}
+            <tr>
+                <td>{{ customer.id }}</td>
+                <td>{{ customer.firstName }}</td>
+                <td>{{ customer.lastName }}</td>
+                <td>{{ customer.phoneNumber }}</td>
+                <td>{{ customer.email }}</td>
+                <td>{{ customer.birthDate ? customer.birthDate|date('Y-m-d') : '' }}</td>
+                <td>
+                    <a href="{{ path('app_customer_show', {'id': customer.id}) }}">show</a>
+                    <a href="{{ path('app_customer_edit', {'id': customer.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% if maxPages > 1 %}
+        <ul id="pages">
+            {%if thisPage > 1 %}
+                <li>
+                    <a href="{{ path('app_customer_paginate', {currentPage: thisPage-1 < 1 ? 1 : thisPage-1}) }}">«</a>
+                </li>
+            {% endif %}
+
+            {# Render each page number #}
+            {% for i in 1..maxPages %}
+                <li>
+                    <a href="{{ path('app_customer_paginate', {currentPage: i}) }}">{{ i }}</a>
+                </li>
+            {% endfor %}
+
+            {# `»` arrow #}
+            {%if thisPage < maxPages %}
+                <li>
+                    <a href="{{ path('app_customer_paginate', {currentPage: thisPage+1 <= maxPages ? thisPage+1 : thisPage}) }}">»</a>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
+    <p>Total Customers: {{ customers.count }}</p>
+    <a href="{{ path('app_customer_new') }}">CREATE NEW</a>
+
+    
+
+{% endblock %}
